@@ -11,7 +11,7 @@ class Archer(Unit):
 
     def use_ability(self, allies, enemies):
         """
-        Deals extra damage if target has low defense.
+        Deals extra damage if target has low defense
         """
         target = select_target(self, enemies)
         if target and target.defense < 5:
