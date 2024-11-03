@@ -1,7 +1,5 @@
 # utils.py
 
-import random
-
 def select_target(unit, opponent_units):
     """
     Selects a target for the unit to attack based on strategy.

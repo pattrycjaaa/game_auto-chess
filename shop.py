@@ -1,5 +1,4 @@
 # shop.py
-
 import random
 
 from units import (

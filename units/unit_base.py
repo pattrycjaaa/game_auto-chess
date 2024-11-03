@@ -1,7 +1,5 @@
 # units/unit_base.py
 
-import random 
-
 class Unit:
     """
     Base class for all units.

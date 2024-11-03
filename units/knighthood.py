@@ -1,7 +1,6 @@
 # units/knighthood.py
 
 from utils import select_target  
-import random 
 from .unit_base import Unit
 
 

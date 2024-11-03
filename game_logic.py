@@ -7,7 +7,6 @@ Contains the main game mechanics functions, including battle rounds, victory che
 damage statistics plotting, and unit health display.
 """
 
-import random
 from units import Unit
 from utils import select_target, apply_faction_buffs
 from matplotlib import pyplot as plt
