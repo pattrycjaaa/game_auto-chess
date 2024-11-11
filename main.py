@@ -28,10 +28,66 @@ def play_game_round(max_rounds=5):
 
         round_number = 1
         while round_number <= max_rounds:
+            print(f"\n--- Round {round_number} ---")
+            print("Please enter the numbers of ALL your units in the order you want them to be attacked (separated by commas).")
+            print("Or enter 'd' for default order.")
+            for i, unit in enumerate(player1_units, start=1):
+                print(f"{i}: {unit.name} (Health: {unit.health}, Attack: {unit.attack})")
+            
+            while True:
+                try:
+                    order_input = input("Enter ALL unit numbers in order (e.g. 1,2,3) or 'd' for default: ")
+                    if order_input.lower() == 'd':
+                        player1_attack_order = player1_units[:]
+                        break
+                    order = order_input.split(",")
+                    if len(order) != len(player1_units):
+                        print(f"Error: You must specify all {len(player1_units)} units.")
+                        continue
+                    if sorted([int(x) for x in order]) != list(range(1, len(player1_units) + 1)):
+                        print("Error: You must use each number exactly once.")
+                        continue
+                    player1_attack_order = [player1_units[int(num)-1] for num in order]
+                    break
+                except (ValueError, IndexError):
+                    print("Error: Invalid input. Use format like 1,2,3")
+
+            print("Selected order:")
+            for unit in player1_attack_order:
+                print(f"{unit.name}")
+
+            print(f"\n--- Round {round_number} ---")
+            print("Please enter the numbers of ALL your units in the order you want them to be attacked (separated by commas).")
+            print("Or enter 'd' for default order.")
+            for i, unit in enumerate(player2_units, start=1):
+                print(f"{i}: {unit.name} (Health: {unit.health}, Attack: {unit.attack})")
+            
+            while True:
+                try:
+                    order_input = input("Enter ALL unit numbers in order (e.g. 1,2,3) or 'd' for default: ")
+                    if order_input.lower() == 'd':
+                        player2_attack_order = player2_units[:]
+                        break
+                    order = order_input.split(",")
+                    if len(order) != len(player2_units):
+                        print(f"Error: You must specify all {len(player2_units)} units.")
+                        continue
+                    if sorted([int(x) for x in order]) != list(range(1, len(player2_units) + 1)):
+                        print("Error: You must use each number exactly once.")
+                        continue
+                    player2_attack_order = [player2_units[int(num)-1] for num in order]
+                    break
+                except (ValueError, IndexError):
+                    print("Error: Invalid input. Use format like 1,2,3")
+
+            print("Selected order:")
+            for unit in player2_attack_order:
+                print(f"{unit.name}")
+
             for turn in range(1, 4):  # Each round contains 3 turns
                 print(f"\n--- Round {round_number} ---")
                 print(f"\n--- Turn {turn} ---")
-                player1.health, player2.health = battle_round(player1_units, player2_units, player1.health, player2.health)
+                player1.health, player2.health = battle_round(player1_units, player2_units, player1.health, player2.health, player1_attack_order, player2_attack_order)
 
                 # Display health after each turn
                 display_unit_health(player1_units, player2_units, player1.health, player2.health, player1_name="Player 1", player2_name="Player 2")

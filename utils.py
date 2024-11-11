@@ -3,13 +3,10 @@
 import random
 
 def select_target(unit, opponent_units):
-    """
-    Selects a random target from the living opponent units.
-    """
     living_targets = [enemy for enemy in opponent_units if enemy.is_alive()]
     if not living_targets:
         return None
-    target = random.choice(living_targets)
+    target = living_targets[0]
     return target
 
 def apply_initial_faction_buffs(player_units):

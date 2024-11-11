@@ -4,7 +4,7 @@ from units import Unit
 from utils import select_target, apply_initial_faction_buffs
 from matplotlib import pyplot as plt
 
-def battle_round(player1_units, player2_units, player1_health, player2_health):
+def battle_round(player1_units, player2_units, player1_health, player2_health, player1_order, player2_order):
     # Apply faction buffs at the start of each round
     apply_initial_faction_buffs(player1_units)
     apply_initial_faction_buffs(player2_units)
@@ -18,10 +18,10 @@ def battle_round(player1_units, player2_units, player1_health, player2_health):
         if unit.is_alive():
             if unit in player1_units:
                 allies = player1_units
-                enemies = player2_units
+                enemies = player2_order
             else:
                 allies = player2_units
-                enemies = player1_units
+                enemies = player1_order
 
             # Unit uses ability
             unit.use_ability(allies, enemies)
