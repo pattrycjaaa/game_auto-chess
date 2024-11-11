@@ -85,4 +85,4 @@ def buy_units(budget, player_number):
                     print("Not enough budget to buy this unit.")
             except ValueError:
                 print("Invalid input. Please enter a number, 'r', or 'q'.")
-    return units
+    return units, budget
