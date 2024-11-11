@@ -16,11 +16,11 @@ def play_game_round(max_rounds=5):
 
         # Player 1 buys units
         print("Player 1, build your army!")
-        player1_units, player1.budget = buy_units(player1.budget, player_number=1)
+        player1_units, player1.budget = buy_units(player1.budget, player_number=1, player_units=None)
 
         # Player 2 buys units
         print("\nPlayer 2, build your army!")
-        player2_units, player2.budget = buy_units(player2.budget, player_number=2)
+        player2_units, player2.budget = buy_units(player2.budget, player_number=2, player_units=None)
 
         # Apply initial faction buffs
         apply_initial_faction_buffs(player1_units)
@@ -42,8 +42,8 @@ def play_game_round(max_rounds=5):
                     return  # End the game if there's a victory
             player1.budget += 10
             player2.budget += 10
-            player1_new_units, player1.budget = buy_units(player1.budget, player_number=1)
-            player2_new_units, player2.budget = buy_units(player2.budget, player_number=2)
+            player1_new_units, player1.budget = buy_units(player1.budget, player_number=1, player_units=player1_units)
+            player2_new_units, player2.budget = buy_units(player2.budget, player_number=2, player_units=player2_units)
             player1_units.extend(player1_new_units)
             player2_units.extend(player2_new_units)
 

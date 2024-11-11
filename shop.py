@@ -46,10 +46,14 @@ def generate_unit_pool():
         unit_pool.append(UnitClass(faction))  # Assign the correct faction
     return unit_pool
 
-def buy_units(budget, player_number):
+def buy_units(budget, player_number, player_units):
     """
     Allows a player to buy units within their budget.
     """
+
+    if player_units is None:
+        player_units = []
+
     units = []
     while True:
         unit_pool = generate_unit_pool()
@@ -77,10 +81,15 @@ def buy_units(budget, player_number):
                     print("Invalid choice. Please try again.")
                     continue
                 unit = unit_pool[index]
+                living_units = [unit for unit in player_units if unit.is_alive()]
+                if len(living_units) >= 6:
+                    print("You already have the maximum number of units (6).")
+                    continue
                 if budget >= unit.cost:
                     units.append(unit)
                     budget -= unit.cost
                     print(f"Bought {unit.name}. Remaining budget: {budget}")
+                    player_units.append(unit)
                 else:
                     print("Not enough budget to buy this unit.")
             except ValueError:
