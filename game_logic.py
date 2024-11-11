@@ -4,7 +4,7 @@ from units import Unit
 from utils import select_target, apply_initial_faction_buffs
 from matplotlib import pyplot as plt
 
-def battle_round(player1_units, player2_units):
+def battle_round(player1_units, player2_units, player1_health, player2_health):
     # Apply faction buffs at the start of each round
     apply_initial_faction_buffs(player1_units)
     apply_initial_faction_buffs(player2_units)
@@ -30,22 +30,25 @@ def battle_round(player1_units, player2_units):
             if target:
                 unit.attack_target(target)
             else:
-                print(f"{unit.name} has no targets to attack.")
+                print(f"{unit.name} has no target and attacks the player directly.")
+                if unit in player1_units:
+                    player2_health -= unit.attack
+                else:
+                    player1_health -= unit.attack
 
     update_buffs_and_debuffs(player1_units + player2_units)
+    return player1_health, player2_health
 
-def check_victory(player1_units, player2_units, player1_name="Player 1", player2_name="Player 2"):
+def check_victory(player1_health, player2_health, player1_name="Player 1", player2_name="Player 2"):
     """
     Checks if there is a victory condition met.
     """
-    player1_alive = any(unit.is_alive() for unit in player1_units)
-    player2_alive = any(unit.is_alive() for unit in player2_units)
-    if not player1_alive and not player2_alive:
-        return "Draw"
-    elif player1_alive and not player2_alive:
+    if player1_health >= 0 and player2_health <= 0:
         return f"{player1_name} wins"
-    elif player2_alive and not player1_alive:
+    elif player2_health >= 0 and player1_health <= 0:
         return f"{player2_name} wins"
+    elif player1_health <= 0 and player2_health <= 0:
+        return "It's a draw"
     return None
 
 def plot_damage_stats(player1_units, player2_units, player1_name="Player 1", player2_name="Player 2"):
@@ -80,10 +83,13 @@ def plot_damage_stats(player1_units, player2_units, player1_name="Player 1", pla
         status = f"Health = {unit.health}/{unit.max_health}" if unit.is_alive() else "Dead"
         print(f"{unit.name} ({owner}): {status}, Damage Dealt = {unit.damage_dealt}")
 
-def display_unit_health(player1_units, player2_units, player1_name="Player 1", player2_name="Player 2"):
+def display_unit_health(player1_units, player2_units, player1_health, player2_health, player1_name="Player 1", player2_name="Player 2"):
     """
     Displays the current health of all units.
     """
+    print ("\n--- Current Player Health ---")
+    print(f"{player1_name}: {player1_health}")
+    print(f"{player2_name}: {player2_health}")
     print("\n--- Current Unit Health ---")
     print(f"{player1_name} Units:")
     for unit in player1_units:
