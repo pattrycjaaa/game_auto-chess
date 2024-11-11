@@ -1,39 +1,39 @@
 # units/royalty.py
 
 from utils import select_target
-import random 
+import random
 from .unit_base import Unit
-
 
 class RoyalGuard(Unit):
     def __init__(self, faction):
         super().__init__('Royal Guard', 19, 8, 9, 5, 6, faction)
+        self.ability_cooldown = 0
 
     def use_ability(self, allies, enemies):
         """
-        Increases attack of all allies.
+        Temporarily increases attack of all allies.
         """
         if self.ability_cooldown == 0:
             for ally in allies:
                 if ally.is_alive():
                     ally.attack += 1
+                    ally.attack_buff_duration = 2  # Effect lasts for 2 turns
             self.ability_cooldown = 3
-            print(f"{self.name} inspires allies, increasing their attack.")
+            print(f"{self.name} inspires allies, increasing their attack for 2 turns.")
         else:
-            self.ability_cooldown = max(0, self.ability_cooldown - 1)
+            self.ability_cooldown -= 1
 
 class QueenStrategist(Unit):
     def __init__(self, faction):
-        super().__init__('Queen Strategist', 18, 6, 8, 5, 7, faction)
-        self.turn_counter = 0
+        super().__init__('Queen Strategist', 20, 6, 9, 7, 7, faction)
+        self.ability_cooldown = 0
 
     def use_ability(self, allies, enemies):
         """
-        Commands an ally to immediately attack.
+        Commands an ally with lower speed to immediately attack.
         """
         if self.ability_cooldown == 0:
-            # Exclude self and get living allies
-            available_allies = [ally for ally in allies if ally.is_alive() and ally != self]
+            available_allies = [ally for ally in allies if ally.is_alive() and ally.speed < self.speed and ally != self]
             if available_allies:
                 ally = random.choice(available_allies)
                 target = select_target(ally, enemies)
@@ -43,24 +43,26 @@ class QueenStrategist(Unit):
                 else:
                     print(f"{self.name} has no enemies for {ally.name} to attack.")
             else:
-                print(f"{self.name} has no allies to command.")
-            self.ability_cooldown = 3
+                print(f"{self.name} has no suitable allies to command.")
+            self.ability_cooldown = 4  # Increased cooldown
         else:
-            self.ability_cooldown = max(0, self.ability_cooldown - 1)
+            self.ability_cooldown -= 1
 
 class KingWarlord(Unit):
     def __init__(self, faction):
-        super().__init__('King Warlord', 20, 10, 11, 4, 8, faction)
+        super().__init__('King Warlord', 20, 8, 11, 4, 8, faction)  # Reduced attack from 10 to 8
+        self.ability_cooldown = 0
 
     def use_ability(self, allies, enemies):
         """
-        Increases defense of all allies.
+        Increases defense of all allies by 1.
         """
         if self.ability_cooldown == 0:
             for ally in allies:
                 if ally.is_alive():
-                    ally.defense += 2
-            self.ability_cooldown = 3
+                    ally.defense += 1  
+                    ally.defense_buff_duration = 2  
+            self.ability_cooldown = 3 
             print(f"{self.name} increases the defense of all allies.")
         else:
-            self.ability_cooldown = max(0, self.ability_cooldown - 1)
+            self.ability_cooldown -= 1
