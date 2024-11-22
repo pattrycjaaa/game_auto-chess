@@ -18,7 +18,7 @@ class AIPlayer:
         unit_pool = generate_unit_pool()
         purchased_units = []
 
-        # Simple strategy: Buy units from the same faction
+        # Simple strategy: Buy units from the same fraction
         factions = ['Knighthood', 'Royalty', 'Archers', 'Clerics']
         preferred_faction = random.choice(factions)
 
@@ -26,7 +26,7 @@ class AIPlayer:
             affordable_units = [unit for unit in unit_pool if unit.cost <= self.budget]
             if not affordable_units:
                 break
-            # Prefer units from the preferred faction
+            # Prefer units from the preferred fraction
             preferred_units = [unit for unit in affordable_units if unit.faction == preferred_faction]
             if preferred_units:
                 unit = random.choice(preferred_units)
