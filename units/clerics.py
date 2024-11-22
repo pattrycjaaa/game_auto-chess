@@ -10,7 +10,7 @@ class Healer(Unit):
 
     def use_ability(self, allies, enemies):
         """
-        Heals the ally with the lowest health.
+        Heals the ally with the lowest health with 15% MAX HP
         """
         if self.heal_cooldown == 0:
             wounded_allies = [ally for ally in allies if ally.is_alive() and ally.health < ally.max_health]
@@ -27,7 +27,10 @@ class Monk(Unit):
     def __init__(self, faction):
         super().__init__('Monk', 12, 6, 7, 6, 5, faction)  
         self.ability_cooldown = 0
-
+        
+        """
+        Put debuff on enemies decreasing attack by 1 on 2 turns
+        """
     def use_ability(self, allies, enemies):
         if self.ability_cooldown == 0:
             target = select_target(self, enemies)
