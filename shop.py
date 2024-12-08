@@ -82,8 +82,8 @@ def buy_units(budget, player_number, player_units):
                     continue
                 unit = unit_pool[index]
                 living_units = [unit for unit in player_units if unit.is_alive()]
-                if len(living_units) >= 6:
-                    print("You already have the maximum number of units (6).")
+                if len(living_units) >= 5:
+                    print("You already have the maximum number of units (5).")
                     continue
                 if budget >= unit.cost:
                     units.append(unit)
