@@ -5,7 +5,7 @@ from .unit_base import Unit
 
 class Healer(Unit):
     def __init__(self, faction):
-        super().__init__('Healer', 13, 5, 6, 5, 4, faction)
+        super().__init__('Healer', 13, 5, 4, 6, 4, 6, faction, "magical")  # Added magical defense
         self.heal_cooldown = 0
 
     def use_ability(self, allies, enemies):
@@ -16,16 +16,16 @@ class Healer(Unit):
             wounded_allies = [ally for ally in allies if ally.is_alive() and ally.health < ally.max_health]
             if wounded_allies:
                 ally_to_heal = min(wounded_allies, key=lambda ally: ally.health)
-                heal_amount = int(ally_to_heal.max_health * 0.15)  # Reduced heal amount
+                heal_amount = int(ally_to_heal.max_health * 0.15)
                 ally_to_heal.health = min(ally_to_heal.max_health, ally_to_heal.health + heal_amount)
-                self.heal_cooldown = 3  # Increased cooldown
+                self.heal_cooldown = 3
                 print(f"{self.name} heals {ally_to_heal.name} for {heal_amount} health.")
         else:
             self.heal_cooldown -= 1
 
 class Monk(Unit):
     def __init__(self, faction):
-        super().__init__('Monk', 12, 6, 7, 6, 5, faction)  
+        super().__init__('Monk', 12, 6, 3, 7, 6, 5, faction, "physical")  
         self.ability_cooldown = 0
 
     def use_ability(self, allies, enemies):
@@ -46,7 +46,7 @@ class Monk(Unit):
 
 class Paladin(Unit):
     def __init__(self, faction):
-        super().__init__('Paladin', 21, 9, 9, 4, 6, faction)  
+        super().__init__('Paladin', 21, 9, 5, 9, 4, 6, faction, "physical")  
 
     def use_ability(self, allies, enemies):
         """

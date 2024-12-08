@@ -6,7 +6,7 @@ from .unit_base import Unit
 
 class RoyalGuard(Unit):
     def __init__(self, faction):
-        super().__init__('Royal Guard', 19, 8, 9, 5, 6, faction)
+        super().__init__('Royal Guard', 19, 8, 9, 5, 5, 6, faction, "physical")
         self.ability_cooldown = 0
 
     def use_ability(self, allies, enemies):
@@ -25,7 +25,7 @@ class RoyalGuard(Unit):
 
 class QueenStrategist(Unit):
     def __init__(self, faction):
-        super().__init__('Queen Strategist', 20, 6, 9, 7, 7, faction)
+        super().__init__('Queen Strategist', 20, 6, 7, 7, 7, 7, faction, "magical")
         self.ability_cooldown = 0
 
     def use_ability(self, allies, enemies):
@@ -50,19 +50,20 @@ class QueenStrategist(Unit):
 
 class KingWarlord(Unit):
     def __init__(self, faction):
-        super().__init__('King Warlord', 20, 8, 11, 4, 8, faction)  # Reduced attack from 10 to 8
+        super().__init__('King Warlord', 20, 8, 11, 4, 4, 8, faction, "physical")  # Reduced attack from 10 to 8
         self.ability_cooldown = 0
 
     def use_ability(self, allies, enemies):
         """
-        Increases defense of all allies by 1.
+        Increases physical and magical defense of all allies by 1.
         """
         if self.ability_cooldown == 0:
             for ally in allies:
                 if ally.is_alive():
-                    ally.defense += 1  
+                    ally.physical_defense += 1  
+                    ally.magical_defense += 1  
                     ally.defense_buff_duration = 2  
             self.ability_cooldown = 3 
-            print(f"{self.name} increases the defense of all allies.")
+            print(f"{self.name} increases the physical and magical defense of all allies.")
         else:
             self.ability_cooldown -= 1

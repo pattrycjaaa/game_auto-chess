@@ -24,9 +24,13 @@ def apply_initial_faction_buffs(player_units):
             for unit in player_units:
                 if unit.faction == faction:
                     unit.attack += 1 
-                    unit.defense += 1
-            print(f"Buff applied: All units of {faction} gain +1 attack and +1 defense at the start of the game!")
+                    unit.physical_defense += 1
+                    unit.magical_defense += 1
+            print(f"Buff applied: All units of {faction} gain +1 attack, +1 physical defense and +1 magical defense!")
 
 def calculate_damage(attacker, defender):
-   
-    return attacker.attack
+    if attacker.attack_type == "physical":
+        final_damage = max(attacker.attack - defender.physical_defense, 0)
+    else:  # magical
+        final_damage = max(attacker.attack - defender.magical_defense, 0)
+    return final_damage

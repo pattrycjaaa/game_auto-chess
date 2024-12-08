@@ -113,16 +113,27 @@ def update_buffs_and_debuffs(units):
             else:
                 del unit.attack_buff_duration
 
-        # Handle defense buffs
-        if hasattr(unit, 'defense_buff_duration'):
-            if unit.defense_buff_duration > 0:
-                unit.defense_buff_duration -= 1
-                if unit.defense_buff_duration == 0:
-                    unit.defense -= 1
-                    print(f"{unit.name}'s defense buff has expired.")
-                    del unit.defense_buff_duration
+        # Handle physical defense buffs
+        if hasattr(unit, 'physical_defense_buff_duration'):
+            if unit.physical_defense_buff_duration > 0:
+                unit.physical_defense_buff_duration -= 1
+                if unit.physical_defense_buff_duration == 0:
+                    unit.physical_defense -= 1
+                    print(f"{unit.name}'s physical defense buff has expired.")
+                    del unit.physical_defense_buff_duration
             else:
-                del unit.defense_buff_duration
+                del unit.physical_defense_buff_duration
+
+        # Handle magical defense buffs
+        if hasattr(unit, 'magical_defense_buff_duration'):
+            if unit.magical_defense_buff_duration > 0:
+                unit.magical_defense_buff_duration -= 1
+                if unit.magical_defense_buff_duration == 0:
+                    unit.magical_defense -= 1
+                    print(f"{unit.name}'s magical defense buff has expired.")
+                    del unit.magical_defense_buff_duration
+            else:
+                del unit.magical_defense_buff_duration
 
         # Handle attack debuffs
         if hasattr(unit, 'attack_debuff_duration'):
