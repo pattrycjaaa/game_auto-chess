@@ -31,7 +31,7 @@ class Crossbowman(Unit):
         if target:
             ignored_defense = target.physical_defense * 0.3
             actual_defense = max(0, target.physical_defense - ignored_defense)
-            damage = max(1, self.attack - actual_defense)
+            damage = max(1, self.attack - int(actual_defense))
             target.take_damage(damage, "physical")
             self.damage_dealt += damage
             print(f"{self.name} pierces armor of {target.name}, ignoring 30% physical defense and deals {damage} damage!")
@@ -44,6 +44,7 @@ class Longbowman(Unit):
     def use_ability(self, allies, enemies):
         """
         Attacks multiple enemies with reduced physical damage.
+        Every time ability is used, it goes on a 3-turn cooldown.
         """
         if self.ability_cooldown == 0:
             living_enemies = [unit for unit in enemies if unit.is_alive()]

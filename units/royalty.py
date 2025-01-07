@@ -11,13 +11,14 @@ class RoyalGuard(Unit):
 
     def use_ability(self, allies, enemies):
         """
-        Temporarily increases attack of all allies.
+        Temporarily increases attack of all allies by 1 for 2 turns.
+        Cooldown: 3 turns.
         """
         if self.ability_cooldown == 0:
             for ally in allies:
                 if ally.is_alive():
                     ally.attack += 1
-                    ally.attack_buff_duration = 2  # Effect lasts for 2 turns
+                    ally.attack_buff_duration = 2  # Po 2 turach spadnie
             self.ability_cooldown = 3
             print(f"{self.name} inspires allies, increasing their attack for 2 turns.")
         else:
@@ -31,6 +32,7 @@ class QueenStrategist(Unit):
     def use_ability(self, allies, enemies):
         """
         Commands an ally with lower speed to immediately attack.
+        Cooldown: 4 turns.
         """
         if self.ability_cooldown == 0:
             available_allies = [ally for ally in allies if ally.is_alive() and ally.speed < self.speed and ally != self]
@@ -44,26 +46,28 @@ class QueenStrategist(Unit):
                     print(f"{self.name} has no enemies for {ally.name} to attack.")
             else:
                 print(f"{self.name} has no suitable allies to command.")
-            self.ability_cooldown = 4  # Increased cooldown
+            self.ability_cooldown = 4
         else:
             self.ability_cooldown -= 1
 
 class KingWarlord(Unit):
     def __init__(self, faction):
-        super().__init__('King Warlord', 20, 8, 11, 4, 4, 8, faction, "physical")  # Reduced attack from 10 to 8
+        super().__init__('King Warlord', 20, 8, 11, 4, 4, 8, faction, "physical")
         self.ability_cooldown = 0
 
     def use_ability(self, allies, enemies):
         """
-        Increases physical and magical defense of all allies by 1.
+        Increases physical and magical defense of all allies by 1 for 2 turns.
+        Cooldown: 3 turns.
         """
         if self.ability_cooldown == 0:
             for ally in allies:
                 if ally.is_alive():
-                    ally.physical_defense += 1  
-                    ally.magical_defense += 1  
-                    ally.defense_buff_duration = 2  
-            self.ability_cooldown = 3 
+                    ally.physical_defense += 1
+                    ally.magical_defense += 1
+                    ally.physical_defense_buff_duration = 2
+                    ally.magical_defense_buff_duration = 2
+            self.ability_cooldown = 3
             print(f"{self.name} increases the physical and magical defense of all allies.")
         else:
             self.ability_cooldown -= 1
