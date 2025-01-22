@@ -4,65 +4,86 @@ from shop import Shop
 
 class AIPlayer:
     """
-    Represents an AI opponent that uses a decision tree for choosing units and strategies.
+    AI, które:
+      1) Przy każdej pojedynczej transakcji generuje NOWĄ pulę 10 jednostek.
+      2) Wybiera frakcję, której ma najwięcej w `self.units` (synergy_faction).
+      3) Kupuje najlepszą jednostkę synergy_faction (o najwyższym (attack, speed)) 
+         jeśli jest w budżecie i występuje w puli.
+      4) W przeciwnym razie kupuje najlepszą spoza synergy_faction.
     """
     def __init__(self, budget):
         self.name = "AI Player"
-        self.health = 100       # <-- DODANE POLE HEALTH
+        self.health = 100
         self.budget = budget
         self.units = []
-        self.preferred_faction = None
         self.shop = Shop()
-
-    def select_preferred_faction(self):
-        """
-        Decide on a preferred faction based on a new random unit pool.
-        (AI tries to focus on a faction that is abundant in the pool)
-        """
-        unit_pool = self.shop.generate_unit_pool()
-        faction_counts = {}
-        for unit in unit_pool:
-            faction_counts[unit.faction] = faction_counts.get(unit.faction, 0) + 1
-
-        self.preferred_faction = max(faction_counts, key=faction_counts.get)
-        print(f"AI prefers faction: {self.preferred_faction}")
 
     def buy_units(self):
         """
-        AI purchases units based on a decision tree:
-         - If no preferred faction, pick one with the largest presence in a random pool
-         - Buy units of that faction first (or fallback to best stats)
+        Pętla: dopóki AI ma budżet > 0:
+          - generuje NOWĄ pulę 10
+          - oblicza synergy_faction (najczęstsza frakcja w self.units)
+          - kupuje jedną kartę (jeśli się da)
+          - powtarza
         """
-        unit_pool = self.shop.generate_unit_pool()
+        print(f"AI (budget={self.budget}) starts buying units...")
 
-        if not self.preferred_faction:
-            self.select_preferred_faction()
-
-        while self.budget > 0 and unit_pool:
-            affordable_units = [unit for unit in unit_pool if unit.cost <= self.budget]
-
-            preferred_units = [u for u in affordable_units if u.faction == self.preferred_faction]
-
-            if preferred_units:
-                unit = max(preferred_units, key=lambda u: (u.attack, u.speed))
-            elif affordable_units:
-                unit = max(affordable_units, key=lambda u: (u.attack, u.speed))
-            else:
+        while True:
+            if self.budget <= 0:
+                print("AI has no budget left.")
                 break
 
-            self.units.append(unit)
-            self.budget -= unit.cost
-            unit_pool.remove(unit)
-            print(f"AI purchased {unit.name} (Faction: {unit.faction}, Attack: {unit.attack}, Speed: {unit.speed}).")
+            # Każda transakcja = nowe 10
+            unit_pool = self.shop.generate_unit_pool()
 
-        print(f"AI has {len(self.units)} units after purchasing.")
+            synergy_faction = self._get_synergy_faction()
+
+            # Filtrujemy, co jest w zasięgu budżetu
+            affordable_units = [u for u in unit_pool if u.cost <= self.budget]
+            if not affordable_units:
+                print("AI can't afford any unit from the new pool.")
+                break
+
+            # Wybieramy w pierwszej kolejności synergy_faction
+            synergy_units = [u for u in affordable_units if u.faction == synergy_faction]
+            if synergy_units:
+                unit_to_buy = max(synergy_units, key=lambda u: (u.attack, u.speed))
+            else:
+                unit_to_buy = max(affordable_units, key=lambda u: (u.attack, u.speed))
+
+            # Kupujemy jedną jednostkę
+            self.units.append(unit_to_buy)
+            self.budget -= unit_to_buy.cost
+            print(f"AI purchased {unit_to_buy.name} (Faction: {unit_to_buy.faction}, "
+                  f"Attack: {unit_to_buy.attack}, Speed: {unit_to_buy.speed}, "
+                  f"Cost: {unit_to_buy.cost}). Budget left: {self.budget}")
+
+        print(f"AI has {len(self.units)} units after purchasing. Final budget: {self.budget}")
+
+
+    def _get_synergy_faction(self):
+        """
+        Zwraca frakcję, której AI ma najwięcej w `self.units`.
+        Jeśli AI nie ma żadnej jednostki, zwróci None.
+        """
+        if not self.units:
+            return None
+
+        faction_counts = {}
+        for unit in self.units:
+            faction_counts[unit.faction] = faction_counts.get(unit.faction, 0) + 1
+
+        synergy_faction = max(faction_counts, key=faction_counts.get)
+        return synergy_faction
 
     def choose_attack_order(self):
         """
-        Automatically determines the attack order for the AI's units.
-        Here: simple approach -> sort descending by speed
+        Sortuje żywe jednostki malejąco po speed (do fazy ataku).
         """
-        self.units = sorted([unit for unit in self.units if unit.is_alive()], key=lambda u: -u.speed)
+        self.units = sorted(
+            [unit for unit in self.units if unit.is_alive()],
+            key=lambda u: -u.speed
+        )
         print("AI attack order determined:")
         for unit in self.units:
             print(f"  {unit.name} (Speed: {unit.speed})")
